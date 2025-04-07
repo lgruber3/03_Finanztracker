@@ -1,12 +1,33 @@
 import React from "react";
 import Axios from "axios";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import Constants from "expo-constants";
+import * as Google from 'expo-google-app-auth';
 
-const Login = () => {
-    const navigation = useNavigation();
+const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+
+    const googleConfig = {
+        iosClientId: '1076804646089-j5tal0fsg9hio8mbgcs68ms3i6is5pog.apps.googleusercontent.com',
+        androidClientId: '1076804646089-j5tal0fsg9hio8mbgcs68ms3i6is5pog.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await Google.logInAsync(googleConfig);
+            if (result.type === 'success') {
+                console.log("Google login success:", result);
+                // Send token to your backend for verification
+            } else {
+                console.log("Google login cancelled");
+            }
+        } catch (error) {
+            console.error("Google login error:", error);
+        }
+    };
+
     const handleLogin = async () => {
         console.log("Attempting login...");
         console.log("Email:", email);
@@ -19,22 +40,29 @@ const Login = () => {
                 },
             };
 
-            console.log("Sending request to:", "https://localhost:7285/api/auth/login");
+            const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+            if (!ipAddress) {
+                console.error("Could not determine host IP address from Expo Go.");
+                return;
+            }
+
+            const apiBaseUrl = `http://${ipAddress}:5242`; // Use http://
+
+            const uri = `${apiBaseUrl}/api/auth/login`;
+
+            console.log("Sending request to:", uri);
             console.log("Request Headers:", config.headers);
             console.log("Request Body:", { email, password });
 
-            const response = await Axios.post(
-                "https://172.20.10.2:7285/api/auth/login",
-                { email, password },
-                config
-            );
+            const response = await Axios.post(uri, { email, password }, config);
 
             console.log("Login Successful");
             console.log("Response Status:", response.status);
             console.log("Response Headers:", response.headers);
             console.log("Response Data:", response.data);
 
-        } catch (error:any) {
+        } catch (error) {
             console.error("Login Failed");
 
             if (error.response) {
@@ -82,11 +110,13 @@ const Login = () => {
                 <TouchableOpacity style={styles.forgotPassword}>
                     <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
                 </TouchableOpacity>
-            </View>
 
-            <View style={styles.bottomContainer}>
                 <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                     <Text style={styles.loginButtonText}>LOG IN</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
+                    <Text style={styles.socialButtonText}>Login with Google</Text>
                 </TouchableOpacity>
 
                 <View style={styles.signupContainer}>
@@ -95,13 +125,12 @@ const Login = () => {
                         <Text style={styles.signupLink}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
-
+            </View>
                 <Image
                     source={require('../../assets/images/stock_bottom.jpg')}
                     style={styles.bottomImage}
                 />
-            </View>
-        </View>
+r        </View>
     );
 };
 
@@ -109,20 +138,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",
-        justifyContent: "flex-start", // Ensure everything starts from the top
-        alignItems: "center", // Center everything horizontally
+        justifyContent: "flex-start",
+        alignItems: "center",
     },
     image: {
         width: "100%",
         height: "30%",
     },
     contentContainer: {
-        flex: 1, // Makes content container take up available space
+        flex: 1,
         width: "100%",
-        backgroundColor: "#ffffff", // White container
+        backgroundColor: "#ffffff",
         padding: 20,
         alignItems: "center",
-        justifyContent: "flex-start", // Content stays at the top
+        justifyContent: "flex-start",
     },
     title: {
         fontSize: 30,
@@ -182,13 +211,26 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     bottomContainer: {
-        alignItems: "center", // Center everything inside the bottom container
+        alignItems: "center",
         width: "100%",
-        backgroundColor: "red",
     },
     bottomImage: {
         width: "100%",
-        height: "22%",
+        height: "15%",
+    },
+
+    socialButton: {
+        width: "55%",
+        backgroundColor: "#db4a39",
+        padding: 15,
+        borderRadius: 100,
+        alignItems: "center",
+        marginBottom: 10,
+    },
+    socialButtonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: "bold",
     },
 });
 

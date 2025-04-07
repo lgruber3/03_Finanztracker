@@ -2,13 +2,16 @@ import React from "react";
 import Axios from "axios";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import Constants from "expo-constants";
+//import { useNavigation, NavigationProp } from "@react-navigation/native";
 
-const Register = () => {
-    const navigation = useNavigation<NavigationProp<any>>();
+const Register = ({navigation}) => {
+    //const navigation = useNavigation<NavigationProp<any>>();
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [confirmPassword, setConfirmPassword] = React.useState("");
+    const [firstName, setFirstName] = React.useState("");
+    const [lastName, setLastName] = React.useState("");
 
 
     const handleRegister = async () => {
@@ -22,9 +25,21 @@ const Register = () => {
                 headers: { "Content-Type": "application/json" },
             };
 
+            const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+            if (!ipAddress) {
+                console.error("Could not determine host IP address from Expo Go.");
+                return;
+            }
+
+            const apiBaseUrl = `http://${ipAddress}:5242`; // Use http://
+
+            const uri = `${apiBaseUrl}/api/auth/register`;
+
+
             const response = await Axios.post(
-                "https://172.20.10.2:7285/api/auth/register",
-                { email, password },
+                uri,
+                { firstName, lastName ,email, password },
                 config
             );
 
@@ -46,6 +61,20 @@ const Register = () => {
             <View style={styles.contentContainer}>
                 <Text style={styles.title}>Create Account</Text>
                 <Text style={styles.subtitle}>Sign up to track your finances</Text>
+
+                <TextInput
+                    placeholder="First Name"
+                    style={styles.input}
+                    placeholderTextColor="#999"
+                    onChangeText={setFirstName}
+                />
+
+                <TextInput
+                    placeholder="Last Name"
+                    style={styles.input}
+                    placeholderTextColor="#999"
+                    onChangeText={setLastName}
+                />
 
                 <TextInput
                     placeholder="Email"

@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 import BudgetSetupScreen from "./Budget";
 import CashAccountSetup from "@/app/SetCash";
-import NotificationPage from "@/app/NotificationPage";
 import ChooseMode from "@/app/ChooseMode";
 import SetCash from "@/app/SetCash";
 
@@ -23,8 +22,8 @@ export default function RootLayout() {
               borderRadius: 25,
               padding: 20,
             }}>
-            <NotificationPage/>
         </View>
+          <SetCash/>
       </View>
 
 

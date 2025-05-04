@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./components/login";
 import Register from "./components/register";
 import CalendarScheduler from "@/app/components/calenderScheduler";
+import AppDrawer from "@/app/appDrawer";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,12 +13,12 @@ export default function Index() {
         <Stack.Navigator
             initialRouteName="Login"
             screenOptions={{
-                headerShown: false
+                headerShown: false,
             }}
         >
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="CalendarScheduler" component={CalendarScheduler} />
+            <Stack.Screen name="MainApp" component={AppDrawer} />
         </Stack.Navigator>
     );
 }

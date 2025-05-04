@@ -43,16 +43,15 @@ export default function CalendarScheduler({ navigation }) {
 
     const getUserId = async () => {
         try {
-            const value = await AsyncStorage.getItem('userId');
-            if (value !== null && value !== undefined && value !== "") {
-                setUserId(value);
+            const user = await AsyncStorage.getItem('user');
+            if (user !== null) {
+                const parsedUser = JSON.parse(user);
+                setUserId(parsedUser.userId);
             }
         } catch (error) {
             console.error('Error retrieving data:', error);
         }
     };
-
-
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -132,9 +131,6 @@ export default function CalendarScheduler({ navigation }) {
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor="#00FF7F" />
             <View style={styles.topHeader}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
-                    <Text style={styles.backButtonText}>←</Text>
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.headerMonthYearContainer}>
                     <Text style={styles.headerMonthYear}>{format(selectedDate, 'MMMM, yyyy')}</Text>
                 </TouchableOpacity>
@@ -265,7 +261,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'right',
-        marginLeft: 200,
     },
     currentDateTime: {
         textAlign: 'center',

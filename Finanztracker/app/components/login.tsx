@@ -59,7 +59,7 @@ const Login = ({navigation}) => {
             const response = await Axios.post(uri, { email, password }, config);
 
             try {
-                await AsyncStorage.setItem("userId", response.data.data.userId);
+                await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
             } catch (e) {
                 console.error('Failed to save the value:', e);
             }
@@ -68,7 +68,7 @@ const Login = ({navigation}) => {
             console.log("Response Headers:", response.headers);
             console.log("Response Data:", response.data);
 
-            navigation.navigate("CalendarScheduler");
+            navigation.replace("MainApp");
         } catch (error) {
             console.error("Login Failed");
 

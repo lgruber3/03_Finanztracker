@@ -3,6 +3,7 @@ import Axios from "axios";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "react-native";
 import Constants from "expo-constants";
 import * as Google from 'expo-google-app-auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
@@ -57,11 +58,17 @@ const Login = ({navigation}) => {
 
             const response = await Axios.post(uri, { email, password }, config);
 
+            try {
+                await AsyncStorage.setItem("userId", response.data.data.userId);
+            } catch (e) {
+                console.error('Failed to save the value:', e);
+            }
             console.log("Login Successful");
             console.log("Response Status:", response.status);
             console.log("Response Headers:", response.headers);
             console.log("Response Data:", response.data);
 
+            navigation.navigate("CalendarScheduler");
         } catch (error) {
             console.error("Login Failed");
 

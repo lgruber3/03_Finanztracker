@@ -18,6 +18,12 @@ const Navbar = ({navigation}) => {
         }
     };
 
+    const logout = async () => {
+        await AsyncStorage.removeItem('user');
+        setUsername("Anonymus");
+        navigation.replace("Login");
+    };
+
     React.useEffect(() => {
         getUserName();
     }, []);
@@ -45,7 +51,7 @@ const Navbar = ({navigation}) => {
                 <MenuItem icon={<Ionicons name="calendar-outline" size={24} color="black" />} label="Kalender" onPress={() => navigation.navigate("CalendarScheduler")}/>
             </ScrollView>
 
-            <TouchableOpacity style={styles.logoutButton}>
+            <TouchableOpacity style={styles.logoutButton} onPress={logout}>
                 <Ionicons name="log-out-outline" size={24} color="black" />
                 <Text style={styles.logoutText}>Logout</Text>
             </TouchableOpacity>
@@ -53,12 +59,13 @@ const Navbar = ({navigation}) => {
     );
 };
 
-const MenuItem = ({ icon, label }: { icon: React.ReactNode, label: string }) => (
-    <TouchableOpacity style={styles.menuItem}>
+const MenuItem = ({ icon, label, onPress }: { icon: React.ReactNode, label: string, onPress?: () => void }) => (
+    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         {icon}
         <Text style={styles.menuLabel}>{label}</Text>
     </TouchableOpacity>
 );
+
 
 const styles = StyleSheet.create({
     container: {

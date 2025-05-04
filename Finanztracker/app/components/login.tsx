@@ -115,7 +115,7 @@ const Login = ({navigation}) => {
                 />
 
                 <TouchableOpacity style={styles.forgotPassword}>
-                    <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+                    <Text style={styles.forgotPasswordText}>Forgot your password? Sucks.</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -137,7 +137,7 @@ const Login = ({navigation}) => {
                     source={require('../../assets/images/stock_bottom.jpg')}
                     style={styles.bottomImage}
                 />
-r        </View>
+        </View>
     );
 };
 

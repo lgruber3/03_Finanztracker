@@ -43,6 +43,7 @@ export default function CalendarScheduler({ navigation }) {
 
     const getUserId = async () => {
         try {
+            await new Promise(resolve => setTimeout(resolve, 100));
             const user = await AsyncStorage.getItem('user');
             if (user !== null) {
                 const parsedUser = JSON.parse(user);
@@ -54,6 +55,12 @@ export default function CalendarScheduler({ navigation }) {
     };
 
     useEffect(() => {
+        getUserId();
+    }, []);
+
+    useEffect(() => {
+        if (!userId) return;
+
         const fetchTransactions = async () => {
             try {
                 const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -82,10 +89,9 @@ export default function CalendarScheduler({ navigation }) {
             }
         };
 
-        getUserId();
         fetchTransactions();
 
-    }, [selectedDate]);
+    }, [selectedDate, userId]);
 
 
     useEffect(() => {

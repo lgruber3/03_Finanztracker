@@ -68,7 +68,7 @@ const Login = ({navigation}) => {
             console.log("Response Headers:", response.headers);
             console.log("Response Data:", response.data);
 
-            navigation.replace("MainApp");
+            navigation.replace("ChooseMode");
         } catch (error) {
             console.error("Login Failed");
 

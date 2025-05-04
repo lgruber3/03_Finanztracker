@@ -49,6 +49,7 @@ const Navbar = ({navigation}) => {
                 <MenuItem icon={<Entypo name="help-with-circle" size={24} color="black" />} label="Help & Support" />
                 <MenuItem icon={<Ionicons name="information-circle-outline" size={24} color="black" />} label="About & Legal" />
                 <MenuItem icon={<Ionicons name="calendar-outline" size={24} color="black" />} label="Kalender" onPress={() => navigation.navigate("CalendarScheduler")}/>
+                <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Budget" onPress={() => navigation.navigate("Budget")}/>
             </ScrollView>
 
             <TouchableOpacity style={styles.logoutButton} onPress={logout}>

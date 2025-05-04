@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const CashAccountSetup = () => {
+const CashAccountSetup = ({navigation}) => {
     const [amount, setAmount] = useState('0');
     const [currency] = useState('EUR');
 
@@ -29,8 +29,7 @@ const CashAccountSetup = () => {
     };
 
     const handleSubmit = () => {
-        console.log('Submitted amount:', parseFloat(amount));
-        // Hier Speicherlogik einfügen
+        navigation.navigate('MainApp');
     };
 
     return (
@@ -39,7 +38,7 @@ const CashAccountSetup = () => {
                 <TouchableOpacity style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("MainApp")}>
                     <Text style={styles.skip}>skip</Text>
                 </TouchableOpacity>
             </View>

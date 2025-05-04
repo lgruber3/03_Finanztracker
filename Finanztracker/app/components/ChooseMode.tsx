@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
 
-export default function ChooseMode() {
+export default function ChooseMode({navigation}) {
     return (
         <View style={styles.container}>
             {/* Weißer Container mit Inhalt */}
@@ -28,11 +28,11 @@ export default function ChooseMode() {
 
                 {/* Buttons */}
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
                         <Text style={styles.buttonText}>Single</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
                         <Text style={styles.buttonText}>Group Finance</Text>
                     </TouchableOpacity>
                 </View>

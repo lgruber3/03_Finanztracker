@@ -34,7 +34,6 @@ const BudgetSetupScreen = () => {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="black" />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={handleDonePress}

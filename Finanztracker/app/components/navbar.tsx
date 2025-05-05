@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+//@ts-ignore
 const Navbar = ({navigation}) => {
     const [username, setUsername] = React.useState("Anonymus");
 

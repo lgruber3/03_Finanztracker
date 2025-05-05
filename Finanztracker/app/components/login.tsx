@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "reac
 import Constants from "expo-constants";
 import * as Google from 'expo-google-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+//@ts-ignore
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -59,6 +59,7 @@ const Login = ({navigation}) => {
             const response = await Axios.post(uri, { email, password }, config);
 
             try {
+                //@ts-ignore
                 await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
             } catch (e) {
                 console.error('Failed to save the value:', e);
@@ -71,16 +72,22 @@ const Login = ({navigation}) => {
             navigation.replace("ChooseMode");
         } catch (error) {
             console.error("Login Failed");
-
+            //@ts-ignore
             if (error.response) {
                 console.error("Server responded with an error:");
+                //@ts-ignore
                 console.error("Status Code:", error.response.status);
+                //@ts-ignore
                 console.error("Response Data:", error.response.data);
+                //@ts-ignore
                 console.error("Response Headers:", error.response.headers);
+                //@ts-ignore
             } else if (error.request) {
                 console.error("No response received from server:");
+                //@ts-ignore
                 console.error("Request Details:", error.request);
             } else {
+                //@ts-ignore
                 console.error("Request Setup Error:", error.message);
             }
         }

@@ -54,7 +54,8 @@ const Navbar = ({navigation}) => {
                 */}
                 <MenuItem icon={<Ionicons name="home-outline" size={24} color="black" />} label="Start" onPress={() => navigation.navigate("Start")}/>
                 <MenuItem icon={<Ionicons name="calendar-outline" size={24} color="black" />} label="Kalender" onPress={() => navigation.navigate("CalendarScheduler")}/>
-                <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Budget" onPress={() => navigation.navigate("Budget")}/>
+                <MenuItem icon={<Ionicons name="card-outline" size={24} color="black" />} label="Budget" onPress={() => navigation.navigate("Budget")}/>
+                <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Currency" onPress={() => navigation.navigate("Currency")}/>
             </ScrollView>
 
             <TouchableOpacity style={styles.logoutButton} onPress={logout}>

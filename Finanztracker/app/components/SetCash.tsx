@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+// @ts-ignore
 const CashAccountSetup = ({navigation}) => {
     const [amount, setAmount] = useState('0');
     const [currency] = useState('EUR');
@@ -33,6 +33,29 @@ const CashAccountSetup = ({navigation}) => {
     };
 
     return (
+<View style={{ flex: 1 }}>
+  {/* Grün-Schwarzer Hintergrund */}
+  <View style={{ flex: 4, backgroundColor: "#00FF7F" }} />
+  <View style={{ flex: 6, backgroundColor: "#222222" }} />
+  
+  {/* Weißer Container darüber */}
+  <View style={{
+    position: 'absolute',
+    top: '10%',
+    left: 20,
+    right: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }}>
         <View style={styles.container}>
             <View style={styles.aboveheader}>
                 <TouchableOpacity style={styles.backButton}>
@@ -102,7 +125,9 @@ const CashAccountSetup = ({navigation}) => {
                 <TouchableOpacity style={[styles.submitButton]} onPress={handleSubmit}>
                     <Text style={styles.submitText}>Bestätigen</Text>
                 </TouchableOpacity>
+                </View>
             </View>
+        </View>
         </View>
     );
 };

@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "reac
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 //import { useNavigation, NavigationProp } from "@react-navigation/native";
-
+//@ts-ignore
 const Register = ({navigation}) => {
     //const navigation = useNavigation<NavigationProp<any>>();
     const [email, setEmail] = React.useState("");

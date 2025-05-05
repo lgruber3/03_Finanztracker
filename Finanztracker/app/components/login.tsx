@@ -4,10 +4,12 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from "reac
 import Constants from "expo-constants";
 import * as Google from 'expo-google-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAppContext } from '../appContext';
 
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const { setIsLoggedIn } = useAppContext();
 
     const googleConfig = {
         iosClientId: '1076804646089-j5tal0fsg9hio8mbgcs68ms3i6is5pog.apps.googleusercontent.com',
@@ -60,6 +62,7 @@ const Login = ({navigation}) => {
 
             try {
                 await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
+                setIsLoggedIn(true);
             } catch (e) {
                 console.error('Failed to save the value:', e);
             }
@@ -67,8 +70,6 @@ const Login = ({navigation}) => {
             console.log("Response Status:", response.status);
             console.log("Response Headers:", response.headers);
             console.log("Response Data:", response.data);
-
-            navigation.replace("ChooseMode");
         } catch (error) {
             console.error("Login Failed");
 

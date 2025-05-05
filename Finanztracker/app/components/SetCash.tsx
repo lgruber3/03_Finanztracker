@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAppContext } from '../appContext';
 
 const CashAccountSetup = ({navigation}) => {
     const [amount, setAmount] = useState('0');
     const [currency] = useState('EUR');
+    const { setHasSetupCash } = useAppContext();
 
     const handleNumberPress = ({num}: { num: any }) => {
         if (amount === '0') {
@@ -29,16 +31,16 @@ const CashAccountSetup = ({navigation}) => {
     };
 
     const handleSubmit = () => {
-        navigation.navigate('MainApp');
+        setHasSetupCash(true);
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.aboveheader}>
                 <TouchableOpacity style={styles.backButton}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
+                    {/* <Ionicons name="arrow-back" size={24} color="black" /> */}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("MainApp")}>
+                <TouchableOpacity onPress={() => setHasSetupCash(true)}>
                     <Text style={styles.skip}>skip</Text>
                 </TouchableOpacity>
             </View>

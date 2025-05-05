@@ -2,16 +2,20 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
+import { useAppContext } from '../appContext'; // Correct path
 
 export default function ChooseMode({navigation}) {
+    const { setHasChosenMode } = useAppContext();
+
     return (
         <View style={styles.container}>
             {/* Weißer Container mit Inhalt */}
             <View style={styles.overlayContainer}>
-                {/* Retour-Icon */}
+                {/* Retour-Icon
                 <TouchableOpacity style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
+                */}
 
                 {/* Überschrift und Beschreibung */}
                 <Text style={styles.title}>Choose Your Mode</Text>
@@ -28,11 +32,11 @@ export default function ChooseMode({navigation}) {
 
                 {/* Buttons */}
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
+                    <TouchableOpacity style={styles.button} onPress={() => setHasChosenMode(true)}>
                         <Text style={styles.buttonText}>Single</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
+                    <TouchableOpacity style={styles.button} onPress={() => setHasChosenMode(true)}>
                         <Text style={styles.buttonText}>Group Finance</Text>
                     </TouchableOpacity>
                 </View>

@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppContext } from '../appContext';
 
 const Navbar = ({navigation}) => {
     const [username, setUsername] = React.useState("Anonymus");
+    const { setIsLoggedIn } = useAppContext();
 
     const getUserName = async () => {
         try {
@@ -21,7 +23,7 @@ const Navbar = ({navigation}) => {
     const logout = async () => {
         await AsyncStorage.removeItem('user');
         setUsername("Anonymus");
-        navigation.replace("Login");
+        setIsLoggedIn(false);
     };
 
     React.useEffect(() => {

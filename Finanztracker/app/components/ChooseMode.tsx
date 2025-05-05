@@ -1,14 +1,18 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-// @ts-ignore
+import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
+import { useAppContext } from '../appContext'; // Correct path
+
 export default function ChooseMode({navigation}) {
+    const { setHasChosenMode } = useAppContext();
+
     return (
         <View style={{ flex: 1 }}>
             {/* Grün-Schwarzer Hintergrund */}
             <View style={{ flex: 4, backgroundColor: "#00FF7F" }} />
             <View style={{ flex: 6, backgroundColor: "#222222" }} />
-            
+
             {/* Weißer Container darüber */}
             <View style={styles.whiteContainer}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -17,18 +21,18 @@ export default function ChooseMode({navigation}) {
 
                 {/* Überschrift und Beschreibung */}
                 <Text style={styles.title}>Choose Your Mode</Text>
-                
+
                 <ScrollView contentContainerStyle={styles.scrollContent}>
                     <Text style={styles.firstDescription}>
                         A finance tracker app helps manage income and expenses, either individually or in a group.
                     </Text>
-                    
+
                     <View style={styles.descriptionSection}>
                         <Text style={styles.description}>
                             In <Text style={styles.bold}>single mode</Text>, users can set budgets, view statistics, and manage bills.
                         </Text>
                     </View>
-                    
+
                     <View style={styles.descriptionSection}>
                         <Text style={styles.description}>
                             In <Text style={styles.bold}>group mode</Text>, shared expenses can be recorded, debts are automatically calculated, and real-time synchronization keeps everyone updated. A chat and notes feature makes communication easier.
@@ -41,11 +45,11 @@ export default function ChooseMode({navigation}) {
 
                 {/* Buttons */}
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
+                    <TouchableOpacity style={styles.button} onPress={() => setHasChosenMode(true)}>
                         <Text style={styles.buttonText}>Single</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("SetCash")}>
+                    <TouchableOpacity style={styles.button} onPress={() => setHasChosenMode(true)}>
                         <Text style={styles.buttonText}>Group Finance</Text>
                     </TouchableOpacity>
                 </View>

@@ -40,6 +40,7 @@ const Navbar = ({navigation}) => {
             </View>
 
             <ScrollView style={styles.menuSection}>
+                {/*
                 <MenuItem icon={<Ionicons name="time-outline" size={24} color="black" />} label="History" />
                 <MenuItem icon={<Ionicons name="stats-chart" size={24} color="black" />} label="Statistics" />
                 <MenuItem icon={<FontAwesome5 name="money-bill-wave" size={24} color="black" />} label="Budgets" />
@@ -48,6 +49,8 @@ const Navbar = ({navigation}) => {
                 <MenuItem icon={<MaterialIcons name="security" size={24} color="black" />} label="Security & Privacy" />
                 <MenuItem icon={<Entypo name="help-with-circle" size={24} color="black" />} label="Help & Support" />
                 <MenuItem icon={<Ionicons name="information-circle-outline" size={24} color="black" />} label="About & Legal" />
+                */}
+                <MenuItem icon={<Ionicons name="home-outline" size={24} color="black" />} label="Start" onPress={() => navigation.navigate("Start")}/>
                 <MenuItem icon={<Ionicons name="calendar-outline" size={24} color="black" />} label="Kalender" onPress={() => navigation.navigate("CalendarScheduler")}/>
                 <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Budget" onPress={() => navigation.navigate("Budget")}/>
             </ScrollView>

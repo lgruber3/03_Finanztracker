@@ -35,6 +35,7 @@ const Register = ({navigation}) => {
             const apiBaseUrl = `http://${ipAddress}:5242`; // Use http://
 
             const uri = `${apiBaseUrl}/api/auth/register`;
+            console.log(`Registering with URI: ${uri}`); // Log the URI for debugging
 
 
             const response = await Axios.post(

@@ -5,6 +5,7 @@ import Constants from "expo-constants";
 import * as Google from 'expo-google-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// @ts-nocheck
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");

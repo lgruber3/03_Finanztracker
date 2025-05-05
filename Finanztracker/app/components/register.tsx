@@ -5,6 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 //import { useNavigation, NavigationProp } from "@react-navigation/native";
 
+
+// @ts-ignore
 const Register = ({navigation}) => {
     //const navigation = useNavigation<NavigationProp<any>>();
     const [email, setEmail] = React.useState("");
@@ -35,7 +37,7 @@ const Register = ({navigation}) => {
             const apiBaseUrl = `http://${ipAddress}:5242`; // Use http://
 
             const uri = `${apiBaseUrl}/api/auth/register`;
-            console.log(`Registering with URI: ${uri}`); // Log the URI for debugging
+            console.log(uri);
 
 
             const response = await Axios.post(

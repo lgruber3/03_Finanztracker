@@ -1,43 +1,30 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-// @ts-ignore
+import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
+//@ts-ignore
 export default function ChooseMode({navigation}) {
     return (
-        <View style={{ flex: 1 }}>
-            {/* Grün-Schwarzer Hintergrund */}
-            <View style={{ flex: 4, backgroundColor: "#00FF7F" }} />
-            <View style={{ flex: 6, backgroundColor: "#222222" }} />
-            
-            {/* Weißer Container darüber */}
-            <View style={styles.whiteContainer}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <View style={styles.container}>
+            {/* Weißer Container mit Inhalt */}
+            <View style={styles.overlayContainer}>
+                {/* Retour-Icon */}
+                <TouchableOpacity style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="#333" />
                 </TouchableOpacity>
 
                 {/* Überschrift und Beschreibung */}
                 <Text style={styles.title}>Choose Your Mode</Text>
-                
-                <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.firstDescription}>
-                        A finance tracker app helps manage income and expenses, either individually or in a group.
-                    </Text>
-                    
-                    <View style={styles.descriptionSection}>
-                        <Text style={styles.description}>
-                            In <Text style={styles.bold}>single mode</Text>, users can set budgets, view statistics, and manage bills.
-                        </Text>
-                    </View>
-                    
-                    <View style={styles.descriptionSection}>
-                        <Text style={styles.description}>
-                            In <Text style={styles.bold}>group mode</Text>, shared expenses can be recorded, debts are automatically calculated, and real-time synchronization keeps everyone updated. A chat and notes feature makes communication easier.
-                        </Text>
-                        <Text style={styles.description}>
-                            Additional features like cloud storage, multi-currency support, and dark mode make the app versatile and user-friendly.
-                        </Text>
-                    </View>
-                </ScrollView>
+                <Text style={styles.first_descriptions}>
+                    A finance tracker app helps manage income and expenses, either individually or in a group.
+                </Text>
+                <Text style={styles.description}>
+                    In <Text style={styles.bold}>single mode</Text>, users can set budgets, view statistics, and manage bills.
+                </Text>
+                <Text style={styles.description}>
+                    In <Text style={styles.bold}>group mode</Text>, shared expenses can be recorded, debts are automatically calculated, and real-time synchronization keeps everyone updated. A chat and notes feature makes communication easier.
+                    Additional features like cloud storage, multi-currency support, and dark mode make the app versatile and user-friendly
+                </Text>
 
                 {/* Buttons */}
                 <View style={styles.buttonContainer}>
@@ -55,72 +42,65 @@ export default function ChooseMode({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    whiteContainer: {
-        position: 'absolute',
-        top: '10%',
-        left: 20,
-        right: 20,
-        bottom: '10%',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 25,
+    container: {
+        flex: 1,
+        backgroundColor: "#00FF7F",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    overlayContainer: {
+        width: "90%",
+        height: "90%",
+        backgroundColor: "#ffffff", // Weißer Container
+        borderRadius: 25, // Abgerundete Ecken
+        padding: 20,
+        justifyContent: "space-between",
+        alignItems: "center",
+        elevation: 5, // Schatten für Android
         shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
     },
-    scrollContent: {
-        paddingBottom: 20,
+
+    bold: {
+        fontWeight: "bold",
     },
+
     backButton: {
         position: "absolute",
-        top: 15,
-        left: 15,
-        zIndex: 1,
+        top: 20,
+        left: 20,
     },
     title: {
-        fontSize: 28,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#333",
         textAlign: "center",
-        marginTop: 10,
-        marginBottom: 20,
+        marginTop: 40,
     },
-    firstDescription: {
+    first_descriptions: {
         fontSize: 16,
         color: "#666",
         textAlign: "center",
-        marginBottom: 20,
-        lineHeight: 22,
-    },
-    descriptionSection: {
-        marginBottom: 20,
     },
     description: {
         fontSize: 16,
         color: "#666",
-        lineHeight: 22,
-        marginBottom: 10,
-    },
-    bold: {
-        fontWeight: "bold",
+        marginTop: -40,
     },
     buttonContainer: {
         width: "100%",
         alignItems: "center",
-        marginTop: 10,
+        marginBottom: 20,
     },
     button: {
-        width: "80%",
+        width: "70%",
         padding: 15,
         backgroundColor: "#1e90ff",
         borderRadius: 10,
         alignItems: "center",
-        marginVertical: 8,
+        marginVertical: 10,
     },
     buttonText: {
         color: "#ffffff",

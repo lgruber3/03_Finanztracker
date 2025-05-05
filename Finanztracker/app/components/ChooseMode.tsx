@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
 
+// @ts-ignore
 export default function ChooseMode({navigation}) {
     return (
         <View style={styles.container}>

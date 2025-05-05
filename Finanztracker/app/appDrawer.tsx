@@ -4,6 +4,7 @@ import Navbar from './components/navbar';
 import CalendarScheduler from './components/calenderScheduler';
 import Budget from "@/app/components/Budget";
 import StartScreen from './components/start';
+import NotificationPage from './components/NotficationsPage';
 
 const Drawer = createDrawerNavigator();
 
@@ -16,6 +17,7 @@ export default function AppDrawer() {
             <Drawer.Screen name="Start" component={StartScreen} />
             <Drawer.Screen name="CalendarScheduler" component={CalendarScheduler} />
             <Drawer.Screen name="Budget" component={Budget} />
+            <Drawer.Screen name="NotificationPage" component={NotificationPage} />
         </Drawer.Navigator>
     );
 }

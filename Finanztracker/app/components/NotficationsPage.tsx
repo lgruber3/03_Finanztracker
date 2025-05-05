@@ -28,9 +28,6 @@ interface NotificationItem {
 function NotificationsScreen({ navigation }: { navigation: any }) {
     const [notifications] = useState<NotificationItem[]>([
         { id: "1", icon: "wallet-outline", text: "Welcome to our Finance Tracker A..", date: "10.03.2025" },
-        { id: "2", icon: "cash-outline", text: "Reminder: Your Netflix subscript..", date: "14.04.2025" },
-        { id: "3", icon: "alert-circle-outline", text: "Large expense detected!", date: "03.05.2025" },
-        { id: "4", icon: "calendar-outline", text: "Budget update: You're at 75%!", date: "03.05.2025" }
     ]);
 
     return (

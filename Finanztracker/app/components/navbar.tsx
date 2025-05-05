@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Ionicons, MaterialIcons, FontAwesome5, Entypo } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// @ts-ignore
 const Navbar = ({navigation}) => {
     const [username, setUsername] = React.useState("Anonymus");
 
@@ -50,6 +51,7 @@ const Navbar = ({navigation}) => {
                 <MenuItem icon={<Ionicons name="information-circle-outline" size={24} color="black" />} label="About & Legal" />
                 <MenuItem icon={<Ionicons name="calendar-outline" size={24} color="black" />} label="Kalender" onPress={() => navigation.navigate("CalendarScheduler")}/>
                 <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Budget" onPress={() => navigation.navigate("Budget")}/>
+                <MenuItem icon={<Ionicons name="cash-outline" size={24} color="black" />} label="Notifcations" onPress={() => navigation.navigate("NotificationPage")}/>
             </ScrollView>
 
             <TouchableOpacity style={styles.logoutButton} onPress={logout}>

@@ -5,6 +5,7 @@ import Constants from "expo-constants";
 import * as Google from 'expo-google-app-auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// @ts-ignore
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -72,16 +73,24 @@ const Login = ({navigation}) => {
         } catch (error) {
             console.error("Login Failed");
 
+            // @ts-ignore
             if (error.response) {
                 console.error("Server responded with an error:");
+                // @ts-ignore
                 console.error("Status Code:", error.response.status);
+                // @ts-ignore
                 console.error("Response Data:", error.response.data);
+                // @ts-ignore
                 console.error("Response Headers:", error.response.headers);
-            } else if (error.request) {
-                console.error("No response received from server:");
-                console.error("Request Details:", error.request);
-            } else {
-                console.error("Request Setup Error:", error.message);
+            } else { // @ts-ignore
+                if (error.request) {
+                                console.error("No response received from server:");
+                                // @ts-ignore
+                    console.error("Request Details:", error.request);
+                            } else {
+                                // @ts-ignore
+                    console.error("Request Setup Error:", error.message);
+                            }
             }
         }
     };

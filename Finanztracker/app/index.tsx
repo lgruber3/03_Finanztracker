@@ -1,21 +1,26 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./components/login";
 import Register from "./components/register";
+import AppDrawer from "@/app/appDrawer";
+import ChooseMode from "./components/ChooseMode";
+import SetCash from "@/app/components/SetCash";
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function Index() {
     return (
         <Stack.Navigator
             initialRouteName="Login"
             screenOptions={{
-                headerShown: false
+                headerShown: false,
             }}
         >
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="ChooseMode" component={ChooseMode} />
+            <Stack.Screen name="SetCash" component={SetCash} />
+            <Stack.Screen name="MainApp" component={AppDrawer} />
         </Stack.Navigator>
     );
 }

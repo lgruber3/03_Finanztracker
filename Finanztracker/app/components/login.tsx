@@ -9,7 +9,7 @@ import { useAppContext } from '../appContext';
 const Login = ({navigation}) => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const { setIsLoggedIn } = useAppContext();
+    const { setIsLoggedIn, loadUser } = useAppContext();
 
     const googleConfig = {
         iosClientId: '1076804646089-j5tal0fsg9hio8mbgcs68ms3i6is5pog.apps.googleusercontent.com',
@@ -62,7 +62,9 @@ const Login = ({navigation}) => {
 
             try {
                 await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
+                console.log("User data saved to AsyncStorage:", JSON.stringify(response.data.data));
                 setIsLoggedIn(true);
+                await loadUser();
             } catch (e) {
                 console.error('Failed to save the value:', e);
             }

@@ -1,23 +1,32 @@
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAppContext } from './appContext';
-import Login from './components/login';
+import AuthStack from './authStack';
+import ChooseMode from './components/ChooseMode';
 import SetCash from './components/SetCash';
 import AppDrawer from './appDrawer';
-import ChooseMode from "@/app/components/ChooseMode";
+import LoadingAnimation from './components/LoadingAnimation';
+
+const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-    const { isLoggedIn, hasSetupCash, hasChosenMode  } = useAppContext();
+    const { isLoggedIn, hasChosenMode, hasSetupCash, isLoading } = useAppContext();
 
-    if (!isLoggedIn) {
-        return <Login />;
+    if (isLoading) {
+        return <LoadingAnimation />;
     }
 
-    if (!hasChosenMode) {
-        return <ChooseMode />;
-    }
-
-    if (!hasSetupCash) {
-        return <SetCash />;
-    }
-
-    return <AppDrawer />;
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {!isLoggedIn ? (
+                <Stack.Screen name="Auth" component={AuthStack} />
+            ) : !hasChosenMode ? (
+                <Stack.Screen name="ChooseMode" component={ChooseMode} />
+            ) : !hasSetupCash ? (
+                <Stack.Screen name="SetCash" component={SetCash} />
+            ) : (
+                <Stack.Screen name="AppDrawer" component={AppDrawer} />
+            )}
+        </Stack.Navigator>
+    );
 }

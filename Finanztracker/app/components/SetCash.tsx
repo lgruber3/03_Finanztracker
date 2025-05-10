@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppContext } from '../appContext';
+import axios from "axios";
+import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CashAccountSetup = ({navigation}) => {
     const [amount, setAmount] = useState('0');
@@ -30,8 +33,42 @@ const CashAccountSetup = ({navigation}) => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async() => {
         setHasSetupCash(true);
+
+        const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+        if (!ipAddress) {
+            console.error("Could not determine host IP address from Expo Go.");
+            return;
+        }
+
+        const apiBaseUrl = `http://${ipAddress}:5242`;
+
+        const uri = `${apiBaseUrl}/api/user/setup-complete`;
+
+        const userJSON = await AsyncStorage.getItem('user');
+        // @ts-ignore
+        const user = JSON.parse(userJSON);
+
+        try {
+            await axios.post(uri, {
+                hasSetupCompleted: true,
+                userId: user.userId,
+            });
+        } catch (error) {
+            if (error.response) {
+                console.error("Server responded with an error:");
+                console.error("Status Code:", error.response.status);
+                console.error("Response Data:", error.response.data);
+                console.error("Response Headers:", error.response.headers);
+            } else if (error.request) {
+                console.error("No response received from server:");
+                console.error("Request Details:", error.request);
+            } else {
+                console.error("Request Setup Error:", error.message);
+            }
+        }
     };
 
     return (
@@ -63,7 +100,7 @@ const CashAccountSetup = ({navigation}) => {
                 <TouchableOpacity style={styles.backButton}>
                     {/* <Ionicons name="arrow-back" size={24} color="black" /> */}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setHasSetupCash(true)}>
+                <TouchableOpacity onPress={handleSubmit}>
                     <Text style={styles.skip}>skip</Text>
                 </TouchableOpacity>
             </View>

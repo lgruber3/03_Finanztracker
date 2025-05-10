@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import {descriptions} from "jest-config"; // Expo-Icons für das Retour-Symbol
 import { useAppContext } from '../appContext'; // Correct path
 
+// @ts-ignore
 export default function ChooseMode({navigation}) {
     const { setHasChosenMode } = useAppContext();
 

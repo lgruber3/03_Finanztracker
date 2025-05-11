@@ -147,13 +147,13 @@ const StartScreen = () => {
 
             <View style={styles.bottomNav}>
                 <TouchableOpacity>
-                    <Ionicons name="home" size={28} color="white" />
+                    <Ionicons name="home" size={28} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Ionicons name="bar-chart" size={28} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toggleMenu}>
-                    <Ionicons name="add-circle" size={48} color="white" />
+                    <Ionicons name="add-circle" size={48} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Ionicons name="cash" size={28} color="black" />

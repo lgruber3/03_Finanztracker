@@ -103,7 +103,9 @@ const CurrencyConverter = ({ navigation }) => {
       {/* Hauptcontainer */}
       <View style={styles.whiteContainer}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          {/*
           <Ionicons name="arrow-back" size={24} color="#333" />
+            */}
         </TouchableOpacity>
 
         {/* Währungsmodals */}

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, Switch, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+
+// @ts-nocheck
 // Typdefinition für die Icons
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 function NotificationsStack() {
     return (
@@ -25,6 +27,16 @@ interface NotificationItem {
     date: string;
 }
 
+const renderItem = ({ item }: { item: NotificationItem }) => (
+    <View style={styles.listItem}>
+        <Ionicons name={item.icon} size={24} color="gray" style={styles.icon} />
+        <View style={styles.textContainer}>
+            <Text numberOfLines={1} style={styles.text}>{item.text}</Text>
+            <Text style={styles.dateText}>{item.date}</Text>
+        </View>
+    </View>
+);
+
 function NotificationsScreen({ navigation }: { navigation: any }) {
     const [notifications] = useState<NotificationItem[]>([
         { id: "1", icon: "wallet-outline", text: "Welcome to our Finance Tracker A..", date: "10.03.2025" },
@@ -41,18 +53,11 @@ function NotificationsScreen({ navigation }: { navigation: any }) {
                     <Ionicons name="settings-outline" size={24} color="black" />
                 </TouchableOpacity>
             </View>
+            eturn (
             <FlatList
                 data={notifications}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <View style={styles.listItem}>
-                        <Ionicons name={item.icon} size={24} color="gray" style={styles.icon} />
-                        <View style={styles.textContainer}>
-                            <Text numberOfLines={1} style={styles.text}>{item.text}</Text>
-                            <Text style={styles.dateText}>{item.date}</Text>
-                        </View>
-                    </View>
-                )}
+                renderItem={renderItem}
             />
         </View>
     );
@@ -84,22 +89,26 @@ function SettingsScreen({ navigation }) {
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Notification Settings</Text>
     <View style={{ width: 24 }} /> {/* Empty view for spacing */}
                                                       </View>
-    {Object.keys(settings).map((key) => (
-        <View key={key} style={styles.listItem}>
-    <View style={styles.textContainer}>
-    <Text style={styles.text}>{key.charAt(0).toUpperCase() + key.slice(1)}</Text>
-        <Text style={styles.dateText}>Notification for {key}</Text>
-    </View>
-    <Switch
-        // @ts-ignore
-        value={settings[key]}
-        onValueChange={() => toggleSwitch(key)}
-        trackColor={{ false: "#767577", true: "#00FF80" }}
-        // @ts-ignore
-        thumbColor={settings[key] ? "#f4f3f4" : "#f4f3f4"}
-        />
-        </View>
-    ))}
+            <>
+                {Object.keys(settings).map((key) => (
+                    <View key={key} style={styles.listItem}>
+                        <View style={styles.textContainer}>
+                            <Text style={styles.text}>
+                                {typeof key === 'string'
+                                    ? key.charAt(0).toUpperCase() + key.slice(1)
+                                    : 'Unknown'}
+                            </Text>
+                            <Text style={styles.dateText}>Notification for {key}</Text>
+                        </View>
+                        <Switch
+                            value={settings[key]}
+                            onValueChange={() => toggleSwitch(key)}
+                            trackColor={{ false: "#767577", true: "#00FF80" }}
+                            thumbColor={settings[key] ? "#f4f3f4" : "#f4f3f4"}
+                        />
+                    </View>
+                ))}
+            </>
     </View>
 );
 }

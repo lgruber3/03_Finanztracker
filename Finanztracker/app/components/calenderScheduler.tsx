@@ -34,7 +34,7 @@ const getOrdinalSuffix = (day) => {
 };
 // @ts-ignore
 export default function CalendarScheduler({ navigation }) {
-    const initialDate = new Date(2025, 2, 12, 10, 22);
+    const initialDate = new Date();
     const [selectedDate, setSelectedDate] = useState(initialDate);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -102,13 +102,11 @@ export default function CalendarScheduler({ navigation }) {
         return () => clearInterval(timer);
     }, []);
 
-    const displayTime = new Date(2025, 2, 12, 13, 22);
-    const currentHour = getHours(displayTime);
-    const currentMinute = getMinutes(displayTime);
+    const currentHour = getHours(currentTime);
+    const currentMinute = getMinutes(currentTime);
     const currentTimeIndicatorTop =
-        currentHour * TIME_SLOT_HEIGHT +
-        (currentMinute / 60) * TIME_SLOT_HEIGHT -
-        4 * TIME_SLOT_HEIGHT;
+        (currentHour + currentMinute / 60) * TIME_SLOT_HEIGHT;
+
 
     const weekDates = useMemo(() => {
         const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
@@ -211,10 +209,21 @@ export default function CalendarScheduler({ navigation }) {
                         );
                     })}
 
-                    {format(selectedDate, 'yyyy-MM-dd') === format(displayTime, 'yyyy-MM-dd') && (
-                        <View style={[styles.currentTimeLine, { top: currentTimeIndicatorTop }]}>
-                            <Text style={styles.currentTimeText}>{format(displayTime, 'HH:mm')}</Text>
-                        </View>
+                    {format(selectedDate, 'yyyy-MM-dd') === format(currentTime, 'yyyy-MM-dd') && (
+                        <>
+                            {/* The 1px Red Line */}
+                            <View style={[styles.actualRedLine, { top: currentTimeIndicatorTop }]} />
+                            {/* The Time Text, positioned relative to the line */}
+                            <Text style={[
+                                styles.timeAnnotationText,
+                                {
+                                    top: currentTimeIndicatorTop - (styles.timeAnnotationText.fontSize / 2) + 0.5, // Vertically centers text on the 1px line
+                                    left: 16, // Indent from the left edge of the screen
+                                }
+                            ]}>
+                                {format(currentTime, 'HH:mm')}
+                            </Text>
+                        </>
                     )}
                 </View>
             </ScrollView>
@@ -234,7 +243,27 @@ export default function CalendarScheduler({ navigation }) {
     );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({actualRedLine: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        height: 1,
+        backgroundColor: 'red',
+        zIndex: 1,
+        marginTop: 2,
+        marginLeft: 16,
+        marginRight: 16,
+    },
+    timeAnnotationText: {
+        position: 'absolute',
+        color: 'red',
+        fontSize: 12,
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        paddingHorizontal: 4,
+        borderRadius: 3,
+        zIndex: 2,
+    },
+
     safeArea: {
         flex: 1,
         backgroundColor: '#fff',

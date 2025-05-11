@@ -1,9 +1,45 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const StartScreen = () => {
+    const [name, setName] = React.useState("Anonymous");
+    const [amount, setAmount] = React.useState("0,00");
+    const [month, setMonth] = React.useState("");
+
+    const getCurrentMonth = () => {
+        const date = new Date();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        setMonth(monthNames[date.getMonth()]);
+    }
+
+    const getUserData = async () => {
+        try {
+            const userData = await AsyncStorage.getItem("user");
+            if (userData) {
+                const parsedData = JSON.parse(userData);
+                setName(parsedData.firstName + " " + parsedData.lastName);
+
+                const accountData = await AsyncStorage.getItem("account");
+                if (accountData) {
+                    const parsedAccountData = JSON.parse(accountData);
+                    setAmount(parsedAccountData.balance);
+                } else {
+                    console.error("No account data found");
+                }
+            }
+        } catch (error) {
+            console.error("Error retrieving user data:", error);
+        }
+    }
+
+    useEffect(() => {
+        getCurrentMonth();
+        getUserData();
+    });
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -18,9 +54,9 @@ const StartScreen = () => {
 
             <View style={styles.budgetCard}>
                 <View style={styles.budgetTextContainer}>
-                    <Text style={styles.userName}>Laurenz Pichler</Text>
-                    <Text style={styles.amount}>1.110.543,92 €</Text>
-                    <Text style={styles.budgetLabel}>Budget <Text style={{ fontStyle: 'italic' }}>March</Text></Text>
+                    <Text style={styles.userName}>{name}</Text>
+                    <Text style={styles.amount}>{amount} €</Text>
+                    <Text style={styles.budgetLabel}>Budget <Text style={{ fontStyle: 'italic' }}>{month}</Text></Text>
                     <ProgressBar progress={0.7} color="#2196f3" style={styles.progressBar} />
                 </View>
                 <FontAwesome5 name="wallet" size={40} color="#888" />

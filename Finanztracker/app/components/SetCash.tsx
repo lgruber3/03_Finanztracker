@@ -56,6 +56,14 @@ const CashAccountSetup = ({navigation}) => {
                 hasSetupCompleted: true,
                 userId: user.userId,
             });
+
+            const accountUri = `${apiBaseUrl}/api/accounts`;
+           const account = await axios.post(accountUri, {
+                userId: user.userId,
+                balance: amount
+            });
+            console.log("Account created successfully:", account.data);
+            await AsyncStorage.setItem("account", JSON.stringify(account.data));
         } catch (error) {
             if (error.response) {
                 console.error("Server responded with an error:");

@@ -66,6 +66,12 @@ const Login = ({navigation}) => {
                 console.log("User data saved to AsyncStorage:", JSON.stringify(response.data.data));
                 setIsLoggedIn(true);
                 await loadUser();
+
+                if (response.data.data.hasSetupCompleted) {
+                    const accountResponse = await Axios.get(`${apiBaseUrl}/api/accounts/${response.data.data.id}`, config);
+                    await AsyncStorage.setItem("account", JSON.stringify(accountResponse.data));
+                    console.log("Account data saved to AsyncStorage:", JSON.stringify(accountResponse.data));
+                }
             } catch (e) {
                 console.error('Failed to save the value:', e);
             }

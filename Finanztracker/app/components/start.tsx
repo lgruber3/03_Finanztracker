@@ -12,7 +12,7 @@ import { ProgressBar } from "react-native-paper";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const StartScreen = () => {
+const StartScreen = ({navigation}) => {
     const [isMenuVisible, setMenuVisible] = useState(false);
 
     const toggleMenu = () => setMenuVisible(!isMenuVisible);

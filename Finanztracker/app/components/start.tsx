@@ -137,7 +137,7 @@ const StartScreen = ({navigation}) => {
                                     <Ionicons name="qr-code-outline" size={20} color="black" />
                                     <Text style={styles.menuText}>QR Code Scan</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Payment Slip")}>
+                                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("InvoiceScanner")}>
                                     <Ionicons name="receipt-outline" size={20} color="black" />
                                     <Text style={styles.menuText}>Payment Slip</Text>
                                 </TouchableOpacity>

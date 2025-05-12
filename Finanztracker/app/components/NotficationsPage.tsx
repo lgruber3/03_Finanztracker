@@ -12,6 +12,7 @@ const Stack = createNativeStackNavigator();
 
 function NotificationsStack() {
     return (
+        //@ts-ignore
         <Stack.Navigator>
             <Stack.Screen name="NotificationsMain" component={NotificationsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
@@ -53,7 +54,6 @@ function NotificationsScreen({ navigation }: { navigation: any }) {
                     <Ionicons name="settings-outline" size={24} color="black" />
                 </TouchableOpacity>
             </View>
-            eturn (
             <FlatList
                 data={notifications}
                 keyExtractor={(item) => item.id}
@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
         padding: 25,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        backgroundColor: "#00FF7F"
     },
     listItem: {
         flexDirection: "row",

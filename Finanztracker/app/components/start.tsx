@@ -12,7 +12,7 @@ import { ProgressBar } from "react-native-paper";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const StartScreen = () => {
+const StartScreen = ({navigation}) => {
     const [isMenuVisible, setMenuVisible] = useState(false);
 
     const toggleMenu = () => setMenuVisible(!isMenuVisible);
@@ -62,12 +62,14 @@ const StartScreen = () => {
                         <Ionicons name="options" size={28} color="white" />
                     </TouchableOpacity>
                     <View style={styles.headerIcons}>
+                        <TouchableOpacity onPress={() => navigation.navigate("NotificationPage")}>
                         <Ionicons
                             name="notifications"
                             size={26}
                             color="white"
                             style={styles.iconSpacing}
                         />
+                        </TouchableOpacity>
                         <Ionicons name="settings" size={26} color="white" />
                     </View>
                 </View>

@@ -6,11 +6,13 @@ import Budget from './components/Budget';
 import StartScreen from './components/start';
 import Currency from "@/app/components/Currency";
 import NotificationPage from './components/NotficationsPage';
+import income from './components/income';
 
 const Drawer = createDrawerNavigator();
 
 export default function AppDrawer() {
     return (
+        // @ts-ignore
         <Drawer.Navigator
             drawerContent={(props) => <Navbar {...props} />}
             screenOptions={{ headerShown: false, drawerType: 'front', drawerStyle: { width: '80%' } }}
@@ -20,6 +22,7 @@ export default function AppDrawer() {
             <Drawer.Screen name="Budget" component={Budget} />
             <Drawer.Screen name="Currency" component={Currency} />
             <Drawer.Screen name="NotificationPage" component={NotificationPage} />
+            <Drawer.Screen name="income" component={income}/>
         </Drawer.Navigator>
     );
 }

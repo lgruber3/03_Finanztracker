@@ -125,13 +125,9 @@ const StartScreen = ({navigation}) => {
                                     <Ionicons name="document-text-outline" size={20} color="black" />
                                     <Text style={styles.menuText}>Custom Entry</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Expenses")}>
-                                    <Ionicons name="remove-circle-outline" size={20} color="black" />
-                                    <Text style={styles.menuText}>Expenses</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Income")}>
+                                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("income")}>
                                     <Ionicons name="add-circle-outline" size={20} color="black" />
-                                    <Text style={styles.menuText}>Income</Text>
+                                    <Text style={styles.menuText}>Income/Expenses</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuItem} onPress={() => console.log("QR Code Scan")}>
                                     <Ionicons name="qr-code-outline" size={20} color="black" />

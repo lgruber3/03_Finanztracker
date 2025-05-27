@@ -7,6 +7,7 @@ import StartScreen from './components/start';
 import Currency from "@/app/components/Currency";
 import NotificationPage from './components/NotficationsPage';
 import income from './components/income';
+import InvoiceScanner from "./components/InvoiceScanner";
 
 const Drawer = createDrawerNavigator();
 
@@ -23,6 +24,7 @@ export default function AppDrawer() {
             <Drawer.Screen name="Currency" component={Currency} />
             <Drawer.Screen name="NotificationPage" component={NotificationPage} />
             <Drawer.Screen name="income" component={income}/>
+            <Drawer.Screen name="InvoiceScanner" component={InvoiceScanner} />
         </Drawer.Navigator>
     );
 }

@@ -58,7 +58,7 @@ const StartScreen = ({navigation}) => {
             {/* Grün-Schwarzer Hintergrund */}
             <View style={{ flex: 4, backgroundColor: "#00FF7F" }} />
             <View style={{ flex: 6, backgroundColor: "#222222" }} />
-            
+
             {/* Hauptinhalt (absolut positioniert über dem Hintergrund) */}
             <View style={styles.contentContainer}>
                 {/* Green header section */}
@@ -90,7 +90,7 @@ const StartScreen = ({navigation}) => {
                         </View>
                         <FontAwesome5 name="wallet" size={40} color="#888" />
                     </View>
-    
+
                     <View style={styles.topExpenses}>
                         <Text style={styles.sectionTitle}>Top-expenses</Text>
                         <Text style={styles.subTitle}>THIS MONTH</Text>
@@ -118,7 +118,7 @@ const StartScreen = ({navigation}) => {
                         </ScrollView>
                     </View>
                 </View>
-    
+
                 {/* Floating Menu */}
                 <Modal transparent visible={isMenuVisible} animationType="fade">
                     <TouchableWithoutFeedback onPress={closeMenu}>
@@ -133,7 +133,7 @@ const StartScreen = ({navigation}) => {
                                         <Ionicons name="remove-circle-outline" size={20} color="black" />
                                         <Text style={styles.menuText}>Expenses</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Income")}>
+                                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("income")}>
                                         <Ionicons name="add-circle-outline" size={20} color="black" />
                                         <Text style={styles.menuText}>Income</Text>
                                     </TouchableOpacity>
@@ -150,7 +150,7 @@ const StartScreen = ({navigation}) => {
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
-    
+
                 <View style={styles.bottomNav}>
                     <TouchableOpacity>
                         <Ionicons name="home" size={28} color="black" />
@@ -194,7 +194,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         backgroundColor: 'transparent',
     },
-    // Behalten Sie den Rest Ihrer bestehenden Stile bei
     header: {
         flexDirection: "row",
         justifyContent: "space-between",

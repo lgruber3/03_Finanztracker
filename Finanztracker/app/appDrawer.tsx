@@ -8,6 +8,7 @@ import Currency from "@/app/components/Currency";
 import NotificationPage from './components/NotficationsPage';
 import income from './components/income';
 import InvoiceScanner from "./components/InvoiceScanner";
+import withBottomNav from "@/app/components/withBottomNav";
 
 const Drawer = createDrawerNavigator();
 
@@ -18,13 +19,13 @@ export default function AppDrawer() {
             drawerContent={(props) => <Navbar {...props} />}
             screenOptions={{ headerShown: false, drawerType: 'front', drawerStyle: { width: '80%' } }}
         >
-            <Drawer.Screen name="Start" component={StartScreen} />
-            <Drawer.Screen name="CalendarScheduler" component={CalendarScheduler} />
-            <Drawer.Screen name="Budget" component={Budget} />
-            <Drawer.Screen name="Currency" component={Currency} />
-            <Drawer.Screen name="NotificationPage" component={NotificationPage} />
-            <Drawer.Screen name="income" component={income}/>
-            <Drawer.Screen name="InvoiceScanner" component={InvoiceScanner} />
+            <Drawer.Screen name="Start" component={withBottomNav(StartScreen)} />
+            <Drawer.Screen name="CalendarScheduler" component={withBottomNav(CalendarScheduler)} />
+            <Drawer.Screen name="Budget" component={withBottomNav(Budget)} />
+            <Drawer.Screen name="Currency" component={withBottomNav(Currency)} />
+            <Drawer.Screen name="NotificationPage" component={withBottomNav(NotificationPage)} />
+            <Drawer.Screen name="income" component={withBottomNav(income)} />
+            <Drawer.Screen name="InvoiceScanner" component={withBottomNav(InvoiceScanner)} />
         </Drawer.Navigator>
     );
 }

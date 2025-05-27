@@ -118,56 +118,6 @@ const StartScreen = ({navigation}) => {
                         </ScrollView>
                     </View>
                 </View>
-
-                {/* Floating Menu */}
-                <Modal transparent visible={isMenuVisible} animationType="fade">
-                    <TouchableWithoutFeedback onPress={closeMenu}>
-                        <View style={styles.modalOverlay}>
-                            <TouchableWithoutFeedback>
-                                <View style={styles.floatingMenu}>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Custom Entry")}>
-                                        <Ionicons name="document-text-outline" size={20} color="black" />
-                                        <Text style={styles.menuText}>Custom Entry</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => console.log("Expenses")}>
-                                        <Ionicons name="remove-circle-outline" size={20} color="black" />
-                                        <Text style={styles.menuText}>Expenses</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("income")}>
-                                        <Ionicons name="add-circle-outline" size={20} color="black" />
-                                        <Text style={styles.menuText}>Income</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => console.log("QR Code Scan")}>
-                                        <Ionicons name="qr-code-outline" size={20} color="black" />
-                                        <Text style={styles.menuText}>QR Code Scan</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("InvoiceScanner")}>
-                                        <Ionicons name="receipt-outline" size={20} color="black" />
-                                        <Text style={styles.menuText}>Payment Slip</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableWithoutFeedback>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
-
-                <View style={styles.bottomNav}>
-                    <TouchableOpacity>
-                        <Ionicons name="home" size={28} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Ionicons name="bar-chart" size={28} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={toggleMenu}>
-                        <Ionicons name="add-circle" size={48} color="green" />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Ionicons name="cash" size={28} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Ionicons name="logo-euro" size={28} color="black" />
-                    </TouchableOpacity>
-                </View>
             </View>
         </View>
     );

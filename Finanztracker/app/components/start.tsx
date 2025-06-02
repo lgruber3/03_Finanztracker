@@ -11,15 +11,22 @@ import {
 import { ProgressBar } from "react-native-paper";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
+import Axios from "axios/index";
+import {useFinanceStore} from "@/app/components/Store";
+import { RefreshControl } from "react-native";
 
 const StartScreen = ({navigation}) => {
     const [isMenuVisible, setMenuVisible] = useState(false);
+    const [transactions, setTransactions] = useState([]);
+    const [userId, setUserId] = useState<string | undefined>(undefined);
+    const [refreshing, setRefreshing] = useState(false);
 
     const toggleMenu = () => setMenuVisible(!isMenuVisible);
     const closeMenu = () => setMenuVisible(false);
 
     const [name, setName] = React.useState("Anonymous");
-    const [amount, setAmount] = React.useState("0,00");
+    const { balance, setBalance } = useFinanceStore();
     const [month, setMonth] = React.useState("");
 
     const getCurrentMonth = () => {
@@ -28,6 +35,14 @@ const StartScreen = ({navigation}) => {
         setMonth(monthNames[date.getMonth()]);
     }
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getUserData();
+        await fetchTransactions();
+        setRefreshing(false);
+    };
+
+
     const getUserData = async () => {
         try {
             const userData = await AsyncStorage.getItem("user");
@@ -35,23 +50,56 @@ const StartScreen = ({navigation}) => {
                 const parsedData = JSON.parse(userData);
                 setName(parsedData.firstName + " " + parsedData.lastName);
 
-                const accountData = await AsyncStorage.getItem("account");
-                if (accountData) {
-                    const parsedAccountData = JSON.parse(accountData);
-                    setAmount(parsedAccountData.balance);
-                } else {
-                    console.error("No account data found");
+                const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+                if (!ipAddress) {
+                    console.error("Could not determine host IP address from Expo Go.");
+                    return;
                 }
+
+                const apiBaseUrl = `http://${ipAddress}:5242`;
+
+                const accountResponse = await Axios.get(`${apiBaseUrl}/api/accounts/${parsedData.userId}`);
+                await AsyncStorage.setItem("account", JSON.stringify(accountResponse.data));
+                console.log("Account data saved to AsyncStorage:", JSON.stringify(accountResponse.data));
+                console.log("Account response:", accountResponse.data);
+                const accountData = accountResponse.data;
+                setBalance(accountData.balance);
             }
         } catch (error) {
             console.error("Error retrieving user data:", error);
         }
     }
 
+    const fetchTransactions = async () => {
+        const user = await AsyncStorage.getItem('user');
+        if (user !== null) {
+            const parsedUser = JSON.parse(user);
+            setUserId(parsedUser.userId);
+
+            const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+            if (!ipAddress) {
+                console.error("Could not determine host IP address from Expo Go.");
+                return;
+            }
+
+            const apiBaseUrl = `http://${ipAddress}:5242`;
+            const uri = `${apiBaseUrl}/api/transactions/${parsedUser.userId}`;
+
+            try {
+                const response = await Axios.get(uri);
+                setTransactions(response.data);
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        }
+    };
+
     useEffect(() => {
         getCurrentMonth();
         getUserData();
-    });
+        fetchTransactions();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -82,7 +130,7 @@ const StartScreen = ({navigation}) => {
                     <View style={styles.budgetCard}>
                         <View style={styles.budgetTextContainer}>
                             <Text style={styles.userName}>{name}</Text>
-                            <Text style={styles.amount}>{amount} €</Text>
+                            <Text style={styles.amount}>{balance} €</Text>
                             <Text style={styles.budgetLabel}>
                                 Budget <Text style={{ fontStyle: "italic" }}>{month}</Text>
                             </Text>
@@ -94,28 +142,23 @@ const StartScreen = ({navigation}) => {
                     <View style={styles.topExpenses}>
                         <Text style={styles.sectionTitle}>Top-expenses</Text>
                         <Text style={styles.subTitle}>THIS MONTH</Text>
-                        <ScrollView>
-                            <View style={styles.expenseRow}>
-                                <MaterialIcons name="home" size={24} color="#ffa500" />
-                                <Text style={styles.expenseLabel}>Rent/Loan</Text>
-                                <Text style={styles.expenseAmount}>-433,23 €</Text>
-                            </View>
-                            <View style={styles.expenseRow}>
-                                <MaterialIcons name="directions-car" size={24} color="#800080" />
-                                <Text style={styles.expenseLabel}>Car expenses</Text>
-                                <Text style={styles.expenseAmount}>-187,43 €</Text>
-                            </View>
-                            <View style={styles.expenseRow}>
-                                <MaterialIcons name="fastfood" size={24} color="#ff0000" />
-                                <Text style={styles.expenseLabel}>Food expenses</Text>
-                                <Text style={styles.expenseAmount}>-89,43 €</Text>
-                            </View>
-                            <View style={styles.expenseRow}>
-                                <MaterialIcons name="checkroom" size={24} color="#00b300" />
-                                <Text style={styles.expenseLabel}>Clothing expenses</Text>
-                                <Text style={styles.expenseAmount}>-63,23 €</Text>
-                            </View>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }
+                        >
+                            {transactions
+                                .filter(tx => tx.type == '1')
+                                .map((tx, index) => (
+                                    <View key={tx.id ?? index} style={styles.expenseRow}>
+                                        <MaterialIcons name="money-off" size={24} color="#ff6347" />
+                                        <Text style={styles.expenseLabel}>{tx.category}</Text>
+                                        <Text style={styles.expenseAmount}>-{tx.amount.toFixed(2)} €</Text>
+                                    </View>
+                                ))
+                            }
                         </ScrollView>
+
                     </View>
                 </View>
             </View>

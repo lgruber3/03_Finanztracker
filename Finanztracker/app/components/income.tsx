@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput, KeyboardAvoidingView, Platform, SafeAreaView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Axios from 'axios';
+import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useFinanceStore} from "@/app/components/Store";
 
 type Transaction = {
-    id: string;
+    id?: string;
     type: 'income' | 'expense';
     category: string;
     amount: number;
     note: string;
     date: string;
+    userId?: string;
 };
 
 const ExpenseTrackerScreen = ( {navigation}) => {
@@ -19,6 +24,8 @@ const ExpenseTrackerScreen = ( {navigation}) => {
     const [amount, setAmount] = useState('');
     const [note, setNote] = useState('');
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [userId, setUserId] = useState<string | undefined>(undefined);
+    const { balance, setBalance } = useFinanceStore();
 
     const expenseCategories = [
         { name: 'Car expenses', icon: 'car-outline', color: '#800080' },
@@ -47,23 +54,83 @@ const ExpenseTrackerScreen = ( {navigation}) => {
         setInputModalVisible(true);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!amount) return;
 
+        const user = await AsyncStorage.getItem('user');
+        if (user !== null) {
+            const parsedUser = JSON.parse(user);
+            setUserId(parsedUser.userId);
+
         const newTransaction: Transaction = {
-            id: Math.random().toString(36).substr(2, 9),
+            //id: Math.random().toString(36).substr(2, 9),
             type: transactionType,
             category: selectedCategory,
             amount: parseFloat(amount),
             note: note,
-            date: new Date().toLocaleString()
+            date: new Date().toISOString(),
+            userId: userId
         };
+
+        console.log('New transaction:', newTransaction);
 
         setTransactions([...transactions, newTransaction]);
         setAmount('');
         setNote('');
         setInputModalVisible(false);
+
+        const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+        if (!ipAddress) {
+            console.error("Could not determine host IP address from Expo Go.");
+            return;
+        }
+
+        const apiBaseUrl = `http://${ipAddress}:5242`;
+        const uri = `${apiBaseUrl}/api/transactions`;
+
+        Axios.post(uri, newTransaction)
+            .then(response => {
+                console.log('Transaction saved:', response.data);
+            })
+            .catch(error => {
+                console.error('Error saving transaction:', error);
+                console.log(error.response ? error.response.data : error.message);
+            });
+        }
+    }
+
+    const fetchTransactions = async () => {
+        const user = await AsyncStorage.getItem('user');
+        if (user !== null) {
+            const parsedUser = JSON.parse(user);
+            setUserId(parsedUser.userId);
+
+            const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+            if (!ipAddress) {
+                console.error("Could not determine host IP address from Expo Go.");
+                return;
+            }
+
+            const apiBaseUrl = `http://${ipAddress}:5242`;
+            const uri = `${apiBaseUrl}/api/transactions/${parsedUser.userId}`;
+
+            try {
+                const response = await Axios.get(uri);
+                setTransactions(response.data);
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchTransactions();
+        };
+
+        fetchData();
+    }, []);
 
     const renderTransactionItem = ({ item }: { item: Transaction }) => (
         <View style={[
@@ -87,7 +154,7 @@ const ExpenseTrackerScreen = ( {navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             {/* Hauptinhalt mit Transaktionsliste */}
-            <View style={styles.content}>
+            <View style={[styles.content, { flex: 1 }]}>
                 <View style={styles.nav}>
                     <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={24} color="#333" />
@@ -99,16 +166,14 @@ const ExpenseTrackerScreen = ( {navigation}) => {
                 <View style={styles.balanceContainer}>
                     <Text style={styles.balanceLabel}>Current Balance:</Text>
                     <Text style={styles.balanceAmount}>
-                        {transactions.reduce((sum, t) => (
-                            t.type === 'income' ? sum + t.amount : sum - t.amount
-                        ), 0).toFixed(2)} €
+                        {balance} €
                     </Text>
                 </View>
 
                 <FlatList
                     data={transactions}
                     renderItem={renderTransactionItem}
-                    keyExtractor={item => item.id}
+                    keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={styles.listContent}
                     ListEmptyComponent={
                         <Text style={styles.emptyText}>No transactions yet</Text>
@@ -255,6 +320,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
+        paddingBottom: 60,
     },
     nav:{
         width: "auto",
@@ -334,7 +400,7 @@ const styles = StyleSheet.create({
     },
     typeSelector: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 100,
         left: 20,
         right: 20,
         flexDirection: 'row',

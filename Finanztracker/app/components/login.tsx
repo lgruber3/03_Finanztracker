@@ -61,6 +61,11 @@ const Login = ({navigation}) => {
 
             const response = await Axios.post(uri, { email, password }, config);
 
+            if (response.status !== 200) {
+                console.error("Login failed", response.status);
+                return;
+            }
+
             try {
                 await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
                 console.log("User data saved to AsyncStorage:", JSON.stringify(response.data.data));

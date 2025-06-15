@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ErrorBoundary from "react-native-error-boundary";
+import {TouchableOpacity, View} from "react-native";
 
 const AppContext = createContext({
     isLoggedIn: false,
@@ -45,10 +47,26 @@ export function AppProvider({ children }) {
         loadUser();
     }, []);
 
+    const ErrorFallback = ({ error, resetErrorBoundary }) => {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ color: 'red', fontSize: 18 }}>Something went wrong:</Text>
+                <Text style={{ color: 'red', fontSize: 16 }}>{error.message}</Text>
+                <TouchableOpacity onPress={resetErrorBoundary} style={{ marginTop: 20 }}>
+                    <Text style={{ color: 'blue' }}>Try again</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
     return (
-        <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn, hasSetupCash, setHasSetupCash, hasChosenMode, setHasChosenMode, isLoading, loadUser }}>
-            {children}
-        </AppContext.Provider>
+        <ErrorBoundary onError={(error, resetErrorBoundary) => {
+            console.error('ErrorBoundary caught an error:', error);
+        } } FallbackComponent={ErrorFallback}>
+            <AppContext.Provider value={{ isLoggedIn, setIsLoggedIn, hasSetupCash, setHasSetupCash, hasChosenMode, setHasChosenMode, isLoading, loadUser }}>
+                {children}
+            </AppContext.Provider>
+        </ErrorBoundary>
     );
 }
 

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     View,
     Text,
@@ -13,6 +13,8 @@ import {
 import { CameraView, CameraType, useCameraPermissions, Camera } from 'expo-camera';
 import Axios from 'axios';
 import * as FileSystem from 'expo-file-system';
+import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const url = 'https://prod-139.westeurope.logic.azure.com:443/workflows/945916bedc254b59bd70b901b6899a33/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8w3PpOPQV1Zl1_bmk1u4iNO1q2SXt0wInoVhGjGnWzo';
 
@@ -25,6 +27,7 @@ const InvoiceScanner = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [capturedPhoto, setCapturedPhoto] = useState<{ uri: string } | null>(null);
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
+    const [userId, setUserId] = useState<string | undefined>(undefined);
 
     if (!permission) return <View />;
     if (!permission.granted) {
@@ -111,7 +114,18 @@ const InvoiceScanner = () => {
         }));
     };
 
-    const handleSubmit = () => {
+    const getUserId = async () => {
+        const user = await AsyncStorage.getItem('user');
+        if (user !== null) {
+            const parsedUser = JSON.parse(user);
+            setUserId(parsedUser.userId);
+    }
+        else {
+            console.warn('No user found in AsyncStorage');
+        }
+    };
+
+    const handleSubmit = async () => {
         const structured = {
             invoiceId: formData.invoiceId,
             vendor: {
@@ -129,7 +143,49 @@ const InvoiceScanner = () => {
             lineItems: formData.lineItems,
         };
 
-        console.log('Submitted structured data:', structured);    };
+        console.log('Submitted structured data:', structured);
+
+        type Transaction = {
+            id?: string;
+            type: 'income' | 'expense';
+            category: string;
+            amount: number;
+            note: string;
+            date: string;
+            userId?: string;
+        };
+
+        const transactionType = structured.totalAmount && parseFloat(structured.totalAmount) >= 0 ? 'income' : 'expense';
+        await getUserId();
+
+        const newTransaction: Transaction = {
+            type: transactionType,
+            category: "Invoice",
+            amount: structured.totalAmount ? parseFloat(structured.totalAmount) : 0,
+            note: `Rechnung von ${structured.vendor.name} für ${structured.customer.name}`,
+            date: structured.invoiceDate || new Date().toISOString(),
+            userId: userId || undefined,
+        };
+
+        const ipAddress = Constants.expoConfig?.hostUri?.split(':').shift();
+
+        if (!ipAddress) {
+            console.error("Could not determine host IP address from Expo Go.");
+            return;
+        }
+
+        const apiBaseUrl = `http://${ipAddress}:5242`;
+        const uri = `${apiBaseUrl}/api/transactions`;
+
+        Axios.post(uri, newTransaction)
+            .then(response => {
+                console.log('Transaction saved:', response.data);
+            })
+            .catch(error => {
+                console.error('Error saving transaction:', error);
+                console.log(error.response ? error.response.data : error.message);
+            });
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -266,7 +322,7 @@ const styles = StyleSheet.create({
         top: '15%',
         left: '5%',
         right: '5%',
-        bottom: '5%',
+        bottom: '10%',
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 16,

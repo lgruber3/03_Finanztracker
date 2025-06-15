@@ -67,7 +67,7 @@ const StartScreen = ({navigation}) => {
                 setBalance(accountData.balance);
             }
         } catch (error) {
-            console.error("Error retrieving user data:", error);
+            console.log("Error retrieving user data:", error);
         }
     }
 
@@ -90,15 +90,32 @@ const StartScreen = ({navigation}) => {
                 const response = await Axios.get(uri);
                 setTransactions(response.data);
             } catch (error) {
-                console.error('Error fetching transactions:', error);
+                console.log('Error fetching transactions:', error);
             }
         }
     };
 
+    const isThisMonth = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        return (
+            date.getMonth() === now.getMonth() &&
+            date.getFullYear() === now.getFullYear()
+        );
+    };
+
     useEffect(() => {
+        const account = AsyncStorage.getItem("account");
+        if (!account) {
+            return;
+        }
         getCurrentMonth();
-        getUserData();
-        fetchTransactions();
+        const fetchStuff = async () => {
+            await getUserData();
+            await fetchTransactions();
+        }
+        fetchStuff();
+        console.log(transactions);
     }, []);
 
     return (
@@ -148,7 +165,9 @@ const StartScreen = ({navigation}) => {
                             }
                         >
                             {transactions
-                                .filter(tx => tx.type == '1')
+                                .filter(tx => tx.type === 'Expense' && isThisMonth(tx.date))
+                                .sort((a, b) => b.amount - a.amount)
+                                .slice(0, 3)
                                 .map((tx, index) => (
                                     <View key={tx.id ?? index} style={styles.expenseRow}>
                                         <MaterialIcons name="money-off" size={24} color="#ff6347" />
@@ -157,9 +176,33 @@ const StartScreen = ({navigation}) => {
                                     </View>
                                 ))
                             }
-                        </ScrollView>
 
+                        </ScrollView>
                     </View>
+                    <View style={styles.topExpenses}>
+                        <Text style={styles.sectionTitle}>Top-income</Text>
+                        <Text style={styles.subTitle}>THIS MONTH</Text>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }
+                        >
+                            {transactions
+                                .filter(tx => tx.type === 'Income' && isThisMonth(tx.date))
+                                .sort((a, b) => b.amount - a.amount)
+                                .slice(0, 3)
+                                .map((tx, index) => (
+                                    <View key={tx.id ?? index} style={styles.expenseRow}>
+                                        <MaterialIcons name="attach-money" size={24} color="#32cd32" />
+                                        <Text style={styles.expenseLabel}>{tx.category}</Text>
+                                        <Text style={[styles.expenseAmount, { color: 'green' }]}>
+                                            +{tx.amount.toFixed(2)} €
+                                        </Text>
+                                    </View>
+                                ))}
+                        </ScrollView>
+                    </View>
+
                 </View>
             </View>
         </View>

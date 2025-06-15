@@ -22,7 +22,7 @@ const Navbar = ({navigation}) => {
     };
 
     const logout = async () => {
-        await AsyncStorage.removeItem('user');
+        await AsyncStorage.clear();
         setUsername("Anonymus");
         setIsLoggedIn(false);
     };

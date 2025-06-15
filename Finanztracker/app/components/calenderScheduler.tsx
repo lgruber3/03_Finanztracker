@@ -8,7 +8,7 @@ import {
     StyleSheet,
     Dimensions,
     SafeAreaView,
-    StatusBar
+    StatusBar, ViewStyle
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format, addDays, startOfWeek, getHours, getMinutes } from 'date-fns';
@@ -83,7 +83,7 @@ export default function CalendarScheduler({ navigation }) {
                     setTransactions(res.data || []);
                     console.log('Fetched transactions:', res.data);
                 } catch (error) {
-                    console.error('Error fetching transactions:', error);
+                    console.log('Error fetching transactions:', error);
                 }
             } catch (err) {
                 console.error('Failed to fetch transactions:', err);
@@ -132,6 +132,33 @@ export default function CalendarScheduler({ navigation }) {
             return format(txDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
         });
     }, [transactions, selectedDate]);
+
+    const groupedTx = useMemo(() => groupTransactionsByTime(transactionsForDay, 20), [transactionsForDay]);
+
+    function groupTransactionsByTime(transactions, thresholdMinutes = 60) {
+        const groups = [];
+
+        const sorted = transactions.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        sorted.forEach(tx => {
+            const txTime = new Date(tx.date).getTime();
+            let placed = false;
+
+            for (const group of groups) {
+                if (group.some(t => Math.abs(new Date(t.date).getTime() - txTime) <= thresholdMinutes * 60 * 1000)) {
+                    group.push(tx);
+                    placed = true;
+                    break;
+                }
+            }
+
+            if (!placed) {
+                groups.push([tx]);
+            }
+        });
+
+        return groups;
+    }
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -194,20 +221,54 @@ export default function CalendarScheduler({ navigation }) {
                         </View>
                     ))}
 
-                    {transactionsForDay.map((tx:any) => {
-                         // @ts-ignore
-                        const txDate = new Date(tx.date);
-                        const hour = getHours(txDate);
-                        const minute = getMinutes(txDate);
+                    {groupedTx.map((group, groupIndex) => {
+                        const baseTxDate = new Date(group[0].date);
+                        const hour = getHours(baseTxDate);
+                        const minute = getMinutes(baseTxDate);
                         const topOffset = hour * TIME_SLOT_HEIGHT + (minute / 60) * TIME_SLOT_HEIGHT;
-                        console.log('Transaction:', tx);
-                        return (
-                             // @ts-ignore
-                            <View key={tx.id} style={[styles.transactionBox, { top: topOffset }]}>
-                                <Text style={styles.transactionText}>{`${tx.category} / €${tx.amount} / ${tx.note}`}</Text>
-                            </View>
-                        );
+
+                        const containerLeft = 80;
+                        const gap = 4;
+                        const totalWidth = SCREEN_WIDTH - containerLeft;
+                        const groupLength = group.length;
+                        const widthPx = (totalWidth / groupLength) - gap;
+                        const widthPercent = (widthPx / totalWidth) * 100;
+
+                        return group.map((tx, i) => {
+                            const leftPx = containerLeft + i * (widthPx + gap);
+                            const categoryColors = {
+                                Investments: '#FF6B6B',
+                                Salary: '#4ECDC4',
+                                Freelance: '#FFD93D',
+                                default: '#0047AB',
+                            };
+
+                            const backgroundColor = categoryColors[tx.category] || categoryColors.default;
+
+                            const inlineStyle = {
+                                top: topOffset,
+                                left: leftPx,
+                                width: widthPx,
+                                position: 'absolute',
+                                backgroundColor:  tx.type === 'Income' ? 'limegreen' : 'crimson',
+                                borderColor: backgroundColor,
+                                borderWidth: 2,
+                            } as ViewStyle;
+
+                            return (
+                                <View
+                                    key={tx.id}
+                                    style={[styles.transactionBox, inlineStyle]}
+                                >
+                                    <Text style={styles.transactionText}>
+                                       {tx.category} / €{tx.amount}
+                                    </Text>
+
+                                </View>
+                            );
+                        });
                     })}
+
 
                     {format(selectedDate, 'yyyy-MM-dd') === format(currentTime, 'yyyy-MM-dd') && (
                         <>
@@ -425,14 +486,16 @@ const styles = StyleSheet.create({actualRedLine: {
         fontWeight: 'bold',
     },
     transactionBox: {
-        position: 'absolute',
-        left: 80,
-        right: 20,
         backgroundColor: '#0047AB',
-        padding: 8,
         borderRadius: 6,
-        elevation: 2,
+        padding: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 4,
         zIndex: 1,
+        position: 'absolute',
     },
     transactionText: {
         color: 'white',

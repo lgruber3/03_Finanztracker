@@ -63,7 +63,6 @@ const ExpenseTrackerScreen = ( {navigation}) => {
             setUserId(parsedUser.userId);
 
         const newTransaction: Transaction = {
-            //id: Math.random().toString(36).substr(2, 9),
             type: transactionType,
             category: selectedCategory,
             amount: parseFloat(amount),
@@ -96,7 +95,9 @@ const ExpenseTrackerScreen = ( {navigation}) => {
             .catch(error => {
                 console.error('Error saving transaction:', error);
                 console.log(error.response ? error.response.data : error.message);
-            });
+            }).finally(() => {
+            navigation.goBack();
+        });
         }
     }
 
@@ -119,7 +120,7 @@ const ExpenseTrackerScreen = ( {navigation}) => {
                 const response = await Axios.get(uri);
                 setTransactions(response.data);
             } catch (error) {
-                console.error('Error fetching transactions:', error);
+                console.log('Error fetching transactions:', error);
             }
         }
     };
@@ -135,7 +136,7 @@ const ExpenseTrackerScreen = ( {navigation}) => {
     const renderTransactionItem = ({ item }: { item: Transaction }) => (
         <View style={[
             styles.transactionItem,
-            { borderLeftColor: item.type === 'income' ? '#4CAF50' : '#F44336' }
+            { borderLeftColor: item.type == 'Income' ? '#4CAF50' : '#F44336' }
         ]}>
             <View style={styles.transactionInfo}>
                 <Text style={styles.transactionCategory}>{item.category}</Text>
@@ -144,9 +145,9 @@ const ExpenseTrackerScreen = ( {navigation}) => {
             </View>
             <Text style={[
                 styles.transactionAmount,
-                { color: item.type === 'income' ? '#4CAF50' : '#F44336' }
+                { color: item.type === 'Income' ? '#4CAF50' : '#F44336' }
             ]}>
-                {item.type === 'income' ? '+' : '-'}{item.amount.toFixed(2)} €
+                {item.type === 'Income' ? '+' : '-'}{item.amount.toFixed(2)} €
             </Text>
         </View>
     );
